@@ -1,0 +1,121 @@
+/* ==============
+    3. PHP MYSQL - POST
+   ================= */
+
+<?php
+    if(isset($_POST['Submit'])) {
+        include_once("config.php");
+
+        $name = $_POST['name'];
+        $tgl_lahir = date('Y-m-d', strtotime($_POST['tgl_lahir']));
+        $hari = substr($tgl_lahir, 8);
+        $bulan = substr($tgl_lahir, 5, 2);
+        $tahun = substr($tgl_lahir, 0, 4);
+
+        $today = new DateTime('today');
+        $y = $today->diff($tgl_lahir)->y;
+
+        if(($bulan==1 && $hari>=20)||($bulan==2 && $hari<19)){
+        $zodiak = "Aquarius";
+        }
+        if(($bulan==2 && $hari>=19 )||($bulan==3 && $hari<21)){
+        $zodiak = "Pisces";
+        }
+        if(($bulan==3 && $hari>=21)||($bulan==4 && $hari<20)){
+        $zodiak = "Aries";
+        }
+        if(($bulan==4 && $hari>=20)||($bulan==5 && $hari<21)){
+        $zodiak = "Taurus";
+        }
+        if(($bulan==5 && $hari>=21)||($bulan==6 && $hari<22)){
+        $zodiak = "Gemini";
+        }
+        if(($bulan==6 && $hari>=21)||($bulan==7 && $hari<23)){
+        $zodiak = "Cancer";
+        }
+        if(($bulan==7 && $hari>=23)||($bulan==8 && $hari<23)){
+        $zodiak = "Leo";
+        }
+        if(($bulan==8 && $hari>=23)||($bulan==9 && $hari<23)){
+        $zodiak = "Virgo";
+        }
+        if(($bulan==9 && $hari>=23)||($bulan==10 && $hari<24)){
+        $zodiak = "Libra";
+        }
+        if(($bulan==10 && $hari>=24)||($bulan==11 && $hari<23)){
+        $zodiak = "Scorpio";
+        }
+        if(($bulan==11 && $hari>=23)||($bulan==12 && $hari<22)){
+        $zodiak = "Sagittarius";
+        }
+        if(($bulan==12 && $hari>=22)||($bulan==1 && $hari<20)){
+        $zodiak = "Capricorn";
+        }
+
+
+        $result = mysqli_query($mysqli, "INSERT INTO karyawan(nama,hari,bulan,tahun,zodiak,usia) VALUES('$name','$hari','$bulan','$tahun', '$zodiak', '$y')");
+
+        echo "Karyawan added successfully. <a href='index.php'>View Karyawan</a>";
+    }
+?>
+
+/* ==============
+    3. PHP MYSQL - GET
+   ================= */
+
+<?php
+include_once("config.php");
+
+$result = mysqli_query($mysqli, "SELECT * FROM karyawan ORDER BY id DESC");
+
+
+$today = new DateTime('today');
+$y = $today->diff($tgl_lahir)->y;
+?>
+
+<html>
+<head>    
+    <title>Homepage</title>
+</head>
+
+<body>
+<a href="add.php">Add New Karyawan</a><br/><br/>
+
+    <table width='80%' border=1>
+
+    <tr>
+        <th>No</th> 
+        <th>Nama</th> 
+        <th>Hari</th> 
+        <th>Bulan</th>
+        <th>Tahun</th>
+        <th>Zodiak</th>
+        <th>Usia</th>
+    </tr>
+    <?php  
+    $no = 1;
+    while($data = mysqli_fetch_array($result)) { 
+
+        $tgl_lahir = date('Y-m-d', strtotime($data['tgl_lahir']));
+        $hari = substr($tgl_lahir, 8);
+        $bulan = substr($tgl_lahir, 5, 2);
+        $tahun = substr($tgl_lahir, 0, 4);
+
+        $today = new DateTime('today');
+        $y = $today->diff($tgl_lahir)->y;
+
+        echo "<tr>";
+        echo "<td>".$no."</td>";
+        echo "<td>".$hari."</td>";
+        echo "<td>".$bulan."</td>";    
+        echo "<td>".$tahun."</td>";    
+        echo "<td>".$data['zodiak']."</td>";    
+        echo "<td>".$y."</td>";    
+
+        $no++;       
+    }
+    ?>
+    </table>
+</body>
+</html>
+
